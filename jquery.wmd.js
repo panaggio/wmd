@@ -885,12 +885,12 @@ var PreviewManager = function(wmd){ // {{{
     // Processes our math syntax before giving the text to Markdown processing
     // FIXME: Work around corner cases (e.g. \(\) inside ``)
     var preprocessMath = function(text) {
-      return text.replace(/\\([\(\[])([\s\S]*?[^\\])\\([\]\)])/g, function(wholeMatch, open, math, close) {
+      return text.replace(/\\([\(\[])([\s\S]*?)\\([\]\)])/g, function(wholeMatch, open, math, close) {
         return "\\\\" + open + math.replace(/([_\*\\])/g, "\\$1") + "\\\\" + close;
       });
     };
 
-    var makePreviewHtml = function(){
+    var makePreviewHtml = function() {
 
         // If there are no registered preview and output panels
         // there is nothing to do.
