@@ -838,6 +838,14 @@ var PreviewManager = function(wmd){ // {{{
         return result;
     };
 
+    // Processes our math syntax before giving the text to Markdown processing
+    // FIXME: Work around corner cases (e.g. \(\) inside ``)
+    var preprocessMath = function(text) {
+      return text.replace(/\\([\(\[])([\s\S]*?[^\\])\\([\]\)])/g, function(wholeMatch, open, math, close) {
+        return "\\\\" + open + math.replace(/([_\*\\])/g, "\\$1") + "\\\\" + close;
+      });
+    };
+
     var makePreviewHtml = function(){
 
         // If there are no registered preview and output panels
@@ -861,7 +869,8 @@ var PreviewManager = function(wmd){ // {{{
         }
 
         if (converter) {
-            text = converter.makeHtml(text);
+            // FIXME: We have hardcoded our math syntax processing
+            text = converter.makeHtml(preprocessMath(text));
         }
 
         // Calculate the processing time of the HTML creation.
@@ -871,13 +880,23 @@ var PreviewManager = function(wmd){ // {{{
 
         pushPreviewHtml(text);
         htmlOut = text;
+
+        // Hack to avoid escaping inside <code>
+        $(wmd.panels.preview).find("code").replaceWith(function() {
+          return $("<code>" +
+            $(this).text().
+              replace(/\\\\([\(\[])([\s\S]*?)\\\\([\]\)])/g, function(match) {
+                return match.replace(/\\([\(\)\[\]_\*\\])/g, "$1");
+              }) +
+            "</code>");
+        });
     };
 
-    // Refreshes the preview area. Calls a user supplied callback if provided.
+    // Refreshes the preview area. Calls user supplied callbacks if provided.
     var previewRefresh = function() {
         makePreviewHtml();
         if (wmd.options.previewRefreshCallback) {
-            wmd.options.previewRefreshCallback();
+            wmd.options.previewRefreshCallback(wmd);
         }
     };
 

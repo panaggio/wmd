@@ -10,7 +10,7 @@
 
    $.fn.wmdMath = function(options) {
 
-     var mathRefresh = function () {
+     var mathRefresh = function(wmd) {
        MathJax.Hub.Queue(["Typeset", MathJax.Hub, options.preview]);
      };
 
