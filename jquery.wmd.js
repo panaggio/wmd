@@ -2511,11 +2511,10 @@ this.makeHtml = function(text) {
 	text = text.replace(/~T/g,"~");
 
         // ** GFM **  Auto-link URLs and emails
-        text = text.replace(/https?\:\/\/[^"\s\<\>]*[^.,;'">\:\s\<\>\)\]\!]/g, function(wholeMatch){
-            var left = RegExp.leftContext
-            var right = RegExp.rightContext
-            if (left.match(/<[^>]+$/) && right.match(/^[^>]*>/)) {return wholeMatch}
-            return "<a href='" + wholeMatch + "'>" + wholeMatch + "</a>";
+	  text = text.replace(/https?\:\/\/[^"\s\<\>]*[^.,;'">\:\s\<\>\)\]\!]/g, function(wholeMatch, issue, matchIndex){
+	  var left = text.slice(0, matchIndex), right = text.slice(matchIndex);
+	  if (left.match(/<[^>]+$/) && right.match(/^[^>]*>/)) {return wholeMatch;}
+          return "<a href='" + wholeMatch + "'>" + wholeMatch + "</a>";
         });
         text = text.replace(/[a-z0-9_\-+=.]+@[a-z0-9\-]+(\.[a-z0-9-]+)+/ig, function(wholeMatch){
             return "<a href='mailto:" + wholeMatch + "'>" + wholeMatch + "</a>";
