@@ -882,14 +882,17 @@ var PreviewManager = function(wmd){ // {{{
         htmlOut = text;
 
         // Hack to avoid escaping inside <code>
-        $(wmd.panels.preview).find("code").replaceWith(function() {
-          return $("<code>" +
-            $(this).text().
-              replace(/\\\\([\(\[])([\s\S]*?)\\\\([\]\)])/g, function(match) {
-                return match.replace(/\\([\(\)\[\]_\*\\])/g, "$1");
-              }) +
-            "</code>");
-        });
+	var code_tag  = $(wmd.panels.preview).find("code");
+	if(code_tag.length > 0) {
+          code_tag.replaceWith(function() {
+            return $("<code>" +
+              $(this).text().
+                replace(/\\\\([\(\[])([\s\S]*?)\\\\([\]\)])/g, function(match) {
+                  return match.replace(/\\([\(\)\[\]_\*\\])/g, "$1");
+                }) +
+              "</code>");
+          });
+	}
     };
 
     // Refreshes the preview area. Calls user supplied callbacks if provided.
