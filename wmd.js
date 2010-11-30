@@ -690,15 +690,23 @@ Chunks.prototype.addBlankLines = function(nLinesBefore, nLinesAfter, findExtraNe
 
     var regexText;
     var replacementText;
+    var match;
 
+
+    // New bug discovered in Chrome, which appears to be related to use of RegExp.$1
+    // Hack it to hold the match results. Sucks because we're double matching...
+    match = /(^\n*)/.exec(this.selection);
     this.selection = this.selection.replace(/(^\n*)/, "");
-    this.startTag = this.startTag + re.$1;
+    this.startTag = this.startTag + (match ? match[1] : "");
+    match = /(\n*$)/.exec(this.selection);
     this.selection = this.selection.replace(/(\n*$)/, "");
-    this.endTag = this.endTag + re.$1;
+    this.endTag = this.endTag + (match ? match[1] : "");
+    match = /(^\n*)/.exec(this.startTag);
     this.startTag = this.startTag.replace(/(^\n*)/, "");
-    this.before = this.before + re.$1;
+    this.before = this.before + (match ? match[1] : "");
+    match = /(\n*$)/.exec(this.endTag);
     this.endTag = this.endTag.replace(/(\n*$)/, "");
-    this.after = this.after + re.$1;
+    this.after = this.after + (match ? match[1] : "");
 
     if (this.before) {
 
