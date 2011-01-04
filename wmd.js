@@ -757,14 +757,17 @@ var InputPoller = function(textarea, callback, interval){ // {{{
     // If so, it runs the callback.
     this.tick = function(){
 
-        if (!util.isVisible(inputArea)) {
-            return;
-        }
-
         // Update the selection start and end, text.
         if (inputArea.selectionStart || inputArea.selectionStart === 0) {
-            var start = inputArea.selectionStart;
-            var end = inputArea.selectionEnd;
+            var start, end;
+            if (inputArea.value == "") {
+                // Workaround for a bug in Chrome: when we set a textarea's
+                // value in code, selectionStart and selectionEnd don't change.
+                start = end = 0;
+            } else {
+                start = inputArea.selectionStart;
+                end = inputArea.selectionEnd;
+            }
             if (start != lastStart || end != lastEnd) {
                 lastStart = start;
                 lastEnd = end;
