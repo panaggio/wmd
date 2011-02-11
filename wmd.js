@@ -39,8 +39,8 @@ WMDEditor.defaults = { // {{{
     imageDirectory: "images/",
 
     // The link and title for the help button
-    helpLink: "http://wmd-editor.com/",
-    helpHoverTitle: "WMD website",
+    helpLink: "http://umamao.com/topics/4cbefdba79de4f58ea000116",
+    helpHoverTitle: "Ajuda na formatação do Umamão",
     helpTarget: "_blank",
 
     // Some intervals in ms.  These can be adjusted to reduce the control's load.
@@ -1580,7 +1580,7 @@ var wmdBase = function(wmd, wmd_options){ // {{{
             buttonRow.appendChild(helpButton);
 
             var helpAnchor = document.createElement("a");
-            helpAnchor.href = wmd_options.helpLink;
+            helpAnchor.href = wmd_options.helpLink ;
             helpAnchor.target = wmd_options.helpTarget;
             helpAnchor.title = wmd_options.helpHoverTitle;
             helpButton.appendChild(helpAnchor);
