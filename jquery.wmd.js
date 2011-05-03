@@ -2519,6 +2519,14 @@ this.makeHtml = function(text) {
 	// attacklab: Restore tildes
 	text = text.replace(/~T/g,"~");
 
+        // ** GFM **  Auto-link URLs and emails
+        text = text.replace(/https?\:\/\/[^"\s\<\>]*[^.,;'">\:\s\<\>\)\]\!]/g, function(wholeMatch,matchIndex){
+          var left = text.slice(0, matchIndex), right = text.slice(matchIndex);
+          if (left.match(/<[^>]+$/) && right.match(/^[^>]*>/)) {return wholeMatch;}
+          return "<a href='" + wholeMatch + "'>" + wholeMatch + "</a>";
+        });
+        text = text.replace(/[a-z0-9_\-+=.]+@[a-z0-9\-]+(\.[a-z0-9-]+)+/ig, function(wholeMatch){return "<a href='mailto:" + wholeMatch + "'>" + wholeMatch + "</a>";});
+
 	return text;
 }
 
@@ -3414,6 +3422,8 @@ var _FormParagraphs = function(text) {
 //    $text - string to process with html <p> tags
 //
 
+        //text = _FindLinks(text);
+
 	// Strip leading and trailing lines:
 	text = text.replace(/^\n+/g,"");
 	text = text.replace(/\n+$/g,"");
@@ -3434,8 +3444,9 @@ var _FormParagraphs = function(text) {
 		}
 		else if (str.search(/\S/) >= 0) {
 			str = _RunSpanGamut(str);
+                        str = str.replace(/\n/g,"<br />");  // Markdown extension. Extracted from GFM
 			str = str.replace(/^([ \t]*)/g,"<p>");
-			str += "</p>"
+			str += "</p>";
 			grafsOut.push(str);
 		}
 
@@ -3493,6 +3504,13 @@ var _EncodeBackslashEscapes = function(text) {
 	return text;
 }
 
+var _FindLinks = function(text) {
+        // Markdown extension
+        // Try to find URLs and emails and link them.
+        text = text.replace(/(^|[^<])(https?:[^'">\s]+)($|[^>])/, "$1<$2>$3");
+        text = text.replace(/(^|\s)/, "<mailto:$2>");
+        return text;
+}
 
 var _DoAutoLinks = function(text) {
 
