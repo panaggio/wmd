@@ -1327,7 +1327,7 @@ var wmdBase = function(wmd, wmd_options){ // {{{
     wmd.Global = {};
     wmd.buttons = {};
 
-    wmd.showdown = top.Attacklab && top.Attacklab.showdown;
+    wmd.showdown = top.Showdown;
 
     var util = WMDEditor.util;
     var position = WMDEditor.position;

@@ -6,6 +6,9 @@
 // Original Markdown Copyright (c) 2004-2005 John Gruber
 //   <http://daringfireball.net/projects/markdown/>
 //
+// Redistributable under a BSD-style open source license.
+// See license.txt for more information.
+//
 // The full source distribution is at:
 //
 //				A A L
@@ -48,7 +51,7 @@
 //
 //   var text = "Markdown *rocks*.";
 //
-//   var converter = new Attacklab.showdown.converter();
+//   var converter = new Showdown.converter();
 //   var html = converter.makeHtml(text);
 //
 //   alert(html);
@@ -59,14 +62,9 @@
 
 
 //
-// Attacklab namespace
-//
-var Attacklab = Attacklab || {}
-
-//
 // Showdown namespace
 //
-Attacklab.showdown = Attacklab.showdown || {}
+var Showdown = {};
 
 //
 // converter
@@ -74,7 +72,7 @@ Attacklab.showdown = Attacklab.showdown || {}
 // Wraps all "globals" so that the only thing
 // exposed is makeHtml().
 //
-Attacklab.showdown.converter = function() {
+Showdown.converter = function() {
 
 //
 // Globals:
@@ -149,19 +147,9 @@ this.makeHtml = function(text) {
 	// attacklab: Restore tildes
 	text = text.replace(/~T/g,"~");
 
-        // ** GFM **  Auto-link URLs and emails
-        text = text.replace(/https?\:\/\/[^"\s\<\>]*[^.,;'">\:\s\<\>\)\]\!]/g, function(wholeMatch, issue, matchIndex){
-	  var left = text.slice(0, matchIndex), right = text.slice(matchIndex);
-	  if (left.match(/<[^>]+$/) && right.match(/^[^>]*>/)) {return wholeMatch;}
-          return "<a href='" + wholeMatch + "'>" + wholeMatch + "</a>";
-        });
-        text = text.replace(/[a-z0-9_\-+=.]+@[a-z0-9\-]+(\.[a-z0-9-]+)+/ig, function(wholeMatch){
-            return "<a href='mailto:" + wholeMatch + "'>" + wholeMatch + "</a>";
-        });
-
-
 	return text;
 }
+
 
 var _StripLinkDefinitions = function(text) {
 //
@@ -192,7 +180,7 @@ var _StripLinkDefinitions = function(text) {
 			  /gm,
 			  function(){...});
 	*/
-	var text = text.replace(/^[ ]{0,3}\[(.+)\]:[ \t]*\n?[ \t]*<?(\S+?)>?[ \t]*\n?[ \t]*(?:(\n*)["(](.+?)[")][ \t]*)?(?:\n+)/gm,
+	var text = text.replace(/^[ ]{0,3}\[(.+)\]:[ \t]*\n?[ \t]*<?(\S+?)>?[ \t]*\n?[ \t]*(?:(\n*)["(](.+?)[")][ \t]*)?(?:\n+|\Z)/gm,
 		function (wholeMatch,m1,m2,m3,m4) {
 			m1 = m1.toLowerCase();
 			g_urls[m1] = _EncodeAmpsAndAngles(m2);  // Link IDs are case-insensitive
@@ -211,6 +199,7 @@ var _StripLinkDefinitions = function(text) {
 
 	return text;
 }
+
 
 var _HashHTMLBlocks = function(text) {
 	// attacklab: Double up blank lines to reduce lookaround
@@ -992,8 +981,6 @@ var _DoItalicsAndBold = function(text) {
 	text = text.replace(/(\*\*|__)(?=\S)([^\r]*?\S[*_]*)\1/g,
 		"<strong>$2</strong>");
 
-        text = text.replace(/(\w)_(\w)/g, "$1~E95E$2") // ** GFM **  "~E95E" == escaped "_"
-
 	text = text.replace(/(\*|_)(?=\S)([^\r]*?\S)\1/g,
 		"<em>$2</em>");
 
@@ -1075,7 +1062,6 @@ var _FormParagraphs = function(text) {
 		}
 		else if (str.search(/\S/) >= 0) {
 			str = _RunSpanGamut(str);
-                        str = str.replace(/\n/g,"<br />");  // ** GFM **
 			str = str.replace(/^([ \t]*)/g,"<p>");
 			str += "</p>"
 			grafsOut.push(str);
@@ -1159,6 +1145,10 @@ var _DoAutoLinks = function(text) {
 			return _EncodeEmailAddress( _UnescapeSpecialChars(m1) );
 		}
 	);
+
+	/* wiki links */
+    //text = text.replace(/(^| )(\b[A-Z][a-z]+[A-Z][\w\u00A1-\uFFFF]+\b)/, "<a href=\""+site.url+"/$1\">$1</a>");
+    //text = text.replace(/\[\[\s*([^\]]+)\]\]/, "<a href=\""+site.url+"/$1\">$1</a>")
 
 	return text;
 }
@@ -1307,14 +1297,4 @@ var escapeCharacters_callback = function(wholeMatch,m1) {
 	return "~E"+charCodeToEscape+"E";
 }
 
-} // end of Attacklab.showdown.converter
-
-
-// Version 0.9 used the Showdown namespace instead of Attacklab.showdown
-// The old namespace is deprecated, but we'll support it for now:
-var Showdown = Attacklab.showdown;
-
-// If anyone's interested, tell the world that this file's been loaded
-if (Attacklab.fileLoaded) {
-	Attacklab.fileLoaded("showdown.js");
-}
+} // end of Showdown.converter
