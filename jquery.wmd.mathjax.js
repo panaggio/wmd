@@ -11,10 +11,12 @@
    $.fn.wmdMath = function(options) {
 
      var mathRefresh = function(wmd) {
-       MathJax.Hub.Queue(["Typeset", MathJax.Hub, options.preview]);
+       if(!options.needsMathRefresh || options.needsMathRefresh())
+         MathJax.Hub.Queue(["Typeset", MathJax.Hub, options.preview]);
      };
 
      options = $.extend({}, {previewRefreshCallback: mathRefresh}, options || {});
+
 
      this.wmd(options);
 
