@@ -2005,10 +2005,20 @@ var wmdBase = function(wmd, wmd_options){ // {{{
             };
 
             if (isImage) {
-                util.prompt(wmd_options.imageDialogText, wmd_options.imageDefaultText, makeLinkMarkdown);
+                if (typeof wmd_options.imageDialogText == 'function') {
+                    wmd_options.imageDialogText(makeLinkMarkdown);
+                } else {
+                    util.prompt(wmd_options.imageDialogText,
+                                wmd_options.imageDefaultText, makeLinkMarkdown);
+                }
             }
             else {
-                util.prompt(wmd_options.linkDialogText, wmd_options.linkDefaultText, makeLinkMarkdown);
+                if (typeof wmd_options.linkDialogText == 'function') {
+                    wmd_options.linkDialogText(makeLinkMarkdown);
+                } else {
+                    util.prompt(wmd_options.linkDialogText,
+                                wmd_options.linkDefaultText, makeLinkMarkdown);
+                }
             }
             return true;
         }
