@@ -55,9 +55,17 @@ WMDEditor.defaults = { // {{{
 
 WMDEditor.prototype = {
     getPanels: function() {
+        var preview;
+        if (typeof this.options.preview == "string" ||
+            this.options.preview instanceof String) {
+          preview = doc.getElementById(this.options.preview);
+        } else {
+          preview = this.options.preview;
+        }
+
         return {
             buttonBar: doc.getElementById(this.options.button_bar),
-            preview: doc.getElementById(this.options.preview),
+            preview: preview,
             output: doc.getElementById(this.options.output),
             input: doc.getElementById(this.options.input)
         };
