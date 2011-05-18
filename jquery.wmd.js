@@ -1553,8 +1553,8 @@ var wmdBase = function(wmd, wmd_options){ // {{{
                 var button = document.createElement("li");
                 wmd.buttons[name] = button;
                 button.className = "wmd-button " + name;
-                            button.XShift = xoffset + "px";
-                            xoffset -= 20;
+                button.XShift = xoffset + "px";
+                xoffset -= 20;
 
                 if (title) {
                     button.title = title;
@@ -1606,6 +1606,10 @@ var wmdBase = function(wmd, wmd_options){ // {{{
             var headingButton = addButton("wmd-heading-button", "Heading <h1>/<h2> Ctrl+H", command.doHeading);
             var hrButton = addButton("wmd-hr-button", "Horizontal Rule <hr> Ctrl+R", command.doHorizontalRule);
             var spacer3 = addSpacer();
+
+            var inlineMathButton = addButton("wmd-inline-math-button", "Inline Math", command.doInlineMath);
+            var blockMathButton = addButton("wmd-block-math-button", "Block Math", command.doBlockMath);
+            var spacer4 = addSpacer();
 
             var undoButton = addButton("wmd-undo-button", "Undo - Ctrl+Z");
             undoButton.execute = function(manager){
@@ -2378,6 +2382,18 @@ var wmdBase = function(wmd, wmd_options){ // {{{
         chunk.selection = "";
         chunk.addBlankLines(2, 1, true);
     };
+
+    command.doInlineMath = function(chunk, postProcessing, useDefaultText) {
+        chunk.startTag = "\\(";
+        chunk.endTag = "\\)";
+    };
+
+    command.doBlockMath = function(chunk, postProcessing, useDefaultText) {
+        chunk.startTag = "\\[";
+        chunk.endTag = "\\]";
+        chunk.addBlankLines(1, 1);
+    };
+
     // }}}
 
 }; // }}}
